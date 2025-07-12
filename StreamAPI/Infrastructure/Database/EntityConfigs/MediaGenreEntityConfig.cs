@@ -4,22 +4,22 @@ using StreamAPI.Domain;
 
 namespace StreamAPI.Infrastructure.Database.EntityConfigs;
 
-public class MediaGenreConfiguration : IEntityTypeConfiguration<MediaGenre>
+public class MediaGenreConfiguration : IEntityTypeConfiguration<MovieGenre>
 {
-    public void Configure(EntityTypeBuilder<MediaGenre> builder)
+    public void Configure(EntityTypeBuilder<MovieGenre> builder)
     {
  
-        builder.HasKey(mg => new { mg.MediaId, mg.GenreId });
+        builder.HasKey(mg => new { mg.MovieId, mg.GenreId });
 
         builder.Property(mg => mg.AddedAt)
             .IsRequired();
 
-        builder.HasOne(mg => mg.Media)
-            .WithMany("Genres") // Refer to `Media.Genres`
-            .HasForeignKey(mg => mg.MediaId);
+        builder.HasOne(mg => mg.Movie)
+            .WithMany(nameof(Movie.Genres))
+            .HasForeignKey(mg => mg.MovieId);
 
         builder.HasOne(mg => mg.Genre)
-            .WithMany("MediaGenres") // Refer to `Genre.MediaGenres`
+            .WithMany(nameof(Genre.MovieGenres))
             .HasForeignKey(mg => mg.GenreId);
     }
 }

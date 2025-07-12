@@ -1,6 +1,6 @@
 namespace StreamAPI.Domain;
 
-public class Season
+public class Season : EntityWithTimeStamp
 {
     public int Id { get; private set; }
     public int Number { get; private set; }
@@ -8,21 +8,21 @@ public class Season
     private readonly List<Episode> _episodes = new();
     public IReadOnlyCollection<Episode> Episodes => _episodes.AsReadOnly();
 
-    public int TvShowId { get; private set; }
-    public TvShow TvShow { get; private set; }
+    public int MovieId { get; private set; }
+    public Movie Movie { get; private set; }
 
-    internal Season(int number, TvShow tvShow)
+    internal Season(int number, Movie movie)
     {
         Number = number;
-        TvShow = tvShow ?? throw new ArgumentNullException(nameof(tvShow));
+        Movie = movie ?? throw new ArgumentNullException(nameof(movie));
     }
 
-    public Episode AddEpisode(int number, string title)
+    public Episode AddEpisode(int number, string title, TimeSpan duration)
     {
         if (_episodes.Any(e => e.Number == number))
             throw new InvalidOperationException($"Episode {number} already exists in Season {Number}.");
 
-        var episode = new Episode(number, title, this);
+        var episode = new Episode(number, title, duration, this);
         _episodes.Add(episode);
         return episode;
     }

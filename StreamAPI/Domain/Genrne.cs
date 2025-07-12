@@ -5,8 +5,8 @@ public class Genre
     public int Id { get; private set; }
     public string Name { get; private set; }
 
-    private readonly List<MediaGenre> _mediaGenres = new();
-    public IReadOnlyCollection<MediaGenre> MediaGenres => _mediaGenres.AsReadOnly();
+    private readonly List<MovieGenre> _movieGenres = new();
+    public IReadOnlyCollection<MovieGenre> MovieGenres => _movieGenres.AsReadOnly();
 
     public Genre(string name)
     {

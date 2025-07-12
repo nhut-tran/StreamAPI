@@ -4,11 +4,11 @@ using StreamAPI.Domain;
 
 namespace StreamAPI.Infrastructure.Database.EntityConfigs;
 
-public class MediaConfiguration : IEntityTypeConfiguration<Media>
+public class MediaConfiguration : IEntityTypeConfiguration<Movie>
 {
-    public void Configure(EntityTypeBuilder<Media> builder)
+    public void Configure(EntityTypeBuilder<Movie> builder)
     {
-        builder.ToTable("media");
+        builder.ToTable("movies");
 
         builder.HasKey(m => m.Id);
 
@@ -21,15 +21,17 @@ public class MediaConfiguration : IEntityTypeConfiguration<Media>
         builder.Property(m => m.Title)
             .IsRequired()
             .HasMaxLength(255);
-
+        
+        builder.Property(m => m.Description)
+            .IsRequired()
+            .HasMaxLength(400);
+        
         builder.Property(m => m.Category)
             .HasConversion<string>();
-
-        builder.HasDiscriminator<Category>("category")
-            .HasValue<Movie>(Category.Movie)
-            .HasValue<TvShow>(Category.TVShow);
-
-        builder.Navigation(nameof(Media.Genres))
+ 
+        builder.Navigation(nameof(Movie.Genres))
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.Navigation(nameof(Movie.Seasons))
             .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

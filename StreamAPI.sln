@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamAPI", "StreamAPI\Stre
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamAPI.Tests", "StreamAPI.Tests\StreamAPI.Tests.csproj", "{C4599D99-5AF1-46D9-B8C1-62D7BBAD463D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{36DB86D8-D543-4833-AC88-847C91EEF8AE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F6FDAE63-6C1F-431F-A5B8-DFF9B75CEF09}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,9 @@ Global
 		{C4599D99-5AF1-46D9-B8C1-62D7BBAD463D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4599D99-5AF1-46D9-B8C1-62D7BBAD463D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4599D99-5AF1-46D9-B8C1-62D7BBAD463D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F126FA53-B86F-4C89-9A30-0E6FA0FB3A99} = {36DB86D8-D543-4833-AC88-847C91EEF8AE}
+		{C4599D99-5AF1-46D9-B8C1-62D7BBAD463D} = {F6FDAE63-6C1F-431F-A5B8-DFF9B75CEF09}
 	EndGlobalSection
 EndGlobal

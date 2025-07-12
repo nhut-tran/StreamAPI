@@ -26,42 +26,46 @@ namespace StreamAPI.Infrastructure.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "media",
+                name: "movies",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     public_id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     title = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    description = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: false),
                     category = table.Column<string>(type: "text", nullable: false),
-                    category1 = table.Column<int>(type: "integer", nullable: false)
+                    release_year = table.Column<int>(type: "integer", nullable: false),
+                    status = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_media", x => x.id);
+                    table.PrimaryKey("pk_movies", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "media_genres",
+                name: "movie_genres",
                 columns: table => new
                 {
-                    media_id = table.Column<int>(type: "integer", nullable: false),
+                    movie_id = table.Column<int>(type: "integer", nullable: false),
                     genre_id = table.Column<int>(type: "integer", nullable: false),
                     added_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_media_genres", x => new { x.media_id, x.genre_id });
+                    table.PrimaryKey("pk_movie_genres", x => new { x.movie_id, x.genre_id });
                     table.ForeignKey(
-                        name: "fk_media_genres_genres_genre_id",
+                        name: "fk_movie_genres_genres_genre_id",
                         column: x => x.genre_id,
                         principalTable: "genres",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_media_genres_media_media_id",
-                        column: x => x.media_id,
-                        principalTable: "media",
+                        name: "fk_movie_genres_movies_movie_id",
+                        column: x => x.movie_id,
+                        principalTable: "movies",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -73,15 +77,17 @@ namespace StreamAPI.Infrastructure.Database.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     number = table.Column<int>(type: "integer", nullable: false),
-                    tv_show_id = table.Column<int>(type: "integer", nullable: false)
+                    movie_id = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_seasons", x => x.id);
                     table.ForeignKey(
-                        name: "fk_seasons_tv_shows_tv_show_id",
-                        column: x => x.tv_show_id,
-                        principalTable: "media",
+                        name: "fk_seasons_movies_movie_id",
+                        column: x => x.movie_id,
+                        principalTable: "movies",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -92,9 +98,14 @@ namespace StreamAPI.Infrastructure.Database.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    duration = table.Column<TimeSpan>(type: "interval", nullable: false),
                     number = table.Column<int>(type: "integer", nullable: false),
                     title = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    season_id = table.Column<int>(type: "integer", nullable: false)
+                    play_back_url = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    upload_status = table.Column<int>(type: "integer", nullable: false),
+                    season_id = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -113,20 +124,20 @@ namespace StreamAPI.Infrastructure.Database.Migrations
                 column: "season_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_media_public_id",
-                table: "media",
+                name: "ix_movie_genres_genre_id",
+                table: "movie_genres",
+                column: "genre_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_movies_public_id",
+                table: "movies",
                 column: "public_id",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_media_genres_genre_id",
-                table: "media_genres",
-                column: "genre_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_seasons_tv_show_id",
+                name: "ix_seasons_movie_id",
                 table: "seasons",
-                column: "tv_show_id");
+                column: "movie_id");
         }
 
         /// <inheritdoc />
@@ -136,7 +147,7 @@ namespace StreamAPI.Infrastructure.Database.Migrations
                 name: "episodes");
 
             migrationBuilder.DropTable(
-                name: "media_genres");
+                name: "movie_genres");
 
             migrationBuilder.DropTable(
                 name: "seasons");
@@ -145,7 +156,7 @@ namespace StreamAPI.Infrastructure.Database.Migrations
                 name: "genres");
 
             migrationBuilder.DropTable(
-                name: "media");
+                name: "movies");
         }
     }
 }

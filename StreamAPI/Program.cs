@@ -9,6 +9,7 @@ using StreamAPI.EndPoint;
 using StreamAPI.Infrastructure.Database;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using ApiVersion = Asp.Versioning.ApiVersion;
 
 var builder = WebApplication.CreateBuilder(args);
 

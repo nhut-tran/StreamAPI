@@ -31,9 +31,22 @@ namespace StreamAPI.Infrastructure.Database.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("interval")
+                        .HasColumnName("duration");
+
                     b.Property<int>("Number")
                         .HasColumnType("integer")
                         .HasColumnName("number");
+
+                    b.Property<string>("PlayBackUrl")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("play_back_url");
 
                     b.Property<int>("SeasonId")
                         .HasColumnType("integer")
@@ -44,6 +57,14 @@ namespace StreamAPI.Infrastructure.Database.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("title");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("UploadStatus")
+                        .HasColumnType("integer")
+                        .HasColumnName("upload_status");
 
                     b.HasKey("Id")
                         .HasName("pk_episodes");
@@ -75,7 +96,7 @@ namespace StreamAPI.Infrastructure.Database.Migrations
                     b.ToTable("genres", (string)null);
                 });
 
-            modelBuilder.Entity("StreamAPI.Domain.Media", b =>
+            modelBuilder.Entity("StreamAPI.Domain.Movie", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -89,11 +110,29 @@ namespace StreamAPI.Infrastructure.Database.Migrations
                         .HasColumnType("text")
                         .HasColumnName("category");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)")
+                        .HasColumnName("description");
+
                     b.Property<Guid>("PublicId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("public_id")
                         .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<int>("ReleaseYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("release_year");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -101,33 +140,25 @@ namespace StreamAPI.Infrastructure.Database.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("title");
 
-                    b.Property<int>("category")
-                        .HasColumnType("integer")
-                        .HasColumnName("category");
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.HasKey("Id")
-                        .HasName("pk_media");
+                        .HasName("pk_movies");
 
                     b.HasIndex("PublicId")
                         .IsUnique()
-                        .HasDatabaseName("ix_media_public_id");
+                        .HasDatabaseName("ix_movies_public_id");
 
-                    b.ToTable("media", null, t =>
-                        {
-                            t.Property("category")
-                                .HasColumnName("category1");
-                        });
-
-                    b.HasDiscriminator<int>("category");
-
-                    b.UseTphMappingStrategy();
+                    b.ToTable("movies", (string)null);
                 });
 
-            modelBuilder.Entity("StreamAPI.Domain.MediaGenre", b =>
+            modelBuilder.Entity("StreamAPI.Domain.MovieGenre", b =>
                 {
-                    b.Property<int>("MediaId")
+                    b.Property<int>("MovieId")
                         .HasColumnType("integer")
-                        .HasColumnName("media_id");
+                        .HasColumnName("movie_id");
 
                     b.Property<int>("GenreId")
                         .HasColumnType("integer")
@@ -137,13 +168,13 @@ namespace StreamAPI.Infrastructure.Database.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("added_at");
 
-                    b.HasKey("MediaId", "GenreId")
-                        .HasName("pk_media_genres");
+                    b.HasKey("MovieId", "GenreId")
+                        .HasName("pk_movie_genres");
 
                     b.HasIndex("GenreId")
-                        .HasDatabaseName("ix_media_genres_genre_id");
+                        .HasDatabaseName("ix_movie_genres_genre_id");
 
-                    b.ToTable("media_genres", (string)null);
+                    b.ToTable("movie_genres", (string)null);
                 });
 
             modelBuilder.Entity("StreamAPI.Domain.Season", b =>
@@ -155,47 +186,29 @@ namespace StreamAPI.Infrastructure.Database.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("integer")
+                        .HasColumnName("movie_id");
+
                     b.Property<int>("Number")
                         .HasColumnType("integer")
                         .HasColumnName("number");
 
-                    b.Property<int>("TvShowId")
-                        .HasColumnType("integer")
-                        .HasColumnName("tv_show_id");
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.HasKey("Id")
                         .HasName("pk_seasons");
 
-                    b.HasIndex("TvShowId")
-                        .HasDatabaseName("ix_seasons_tv_show_id");
+                    b.HasIndex("MovieId")
+                        .HasDatabaseName("ix_seasons_movie_id");
 
                     b.ToTable("seasons", (string)null);
-                });
-
-            modelBuilder.Entity("StreamAPI.Domain.Movie", b =>
-                {
-                    b.HasBaseType("StreamAPI.Domain.Media");
-
-                    b.ToTable("media", null, t =>
-                        {
-                            t.Property("category")
-                                .HasColumnName("category1");
-                        });
-
-                    b.HasDiscriminator().HasValue(0);
-                });
-
-            modelBuilder.Entity("StreamAPI.Domain.TvShow", b =>
-                {
-                    b.HasBaseType("StreamAPI.Domain.Media");
-
-                    b.ToTable("media", null, t =>
-                        {
-                            t.Property("category")
-                                .HasColumnName("category1");
-                        });
-
-                    b.HasDiscriminator().HasValue(1);
                 });
 
             modelBuilder.Entity("StreamAPI.Domain.Episode", b =>
@@ -210,57 +223,54 @@ namespace StreamAPI.Infrastructure.Database.Migrations
                     b.Navigation("Season");
                 });
 
-            modelBuilder.Entity("StreamAPI.Domain.MediaGenre", b =>
+            modelBuilder.Entity("StreamAPI.Domain.MovieGenre", b =>
                 {
                     b.HasOne("StreamAPI.Domain.Genre", "Genre")
-                        .WithMany("MediaGenres")
+                        .WithMany("MovieGenres")
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_media_genres_genres_genre_id");
+                        .HasConstraintName("fk_movie_genres_genres_genre_id");
 
-                    b.HasOne("StreamAPI.Domain.Media", "Media")
+                    b.HasOne("StreamAPI.Domain.Movie", "Movie")
                         .WithMany("Genres")
-                        .HasForeignKey("MediaId")
+                        .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_media_genres_media_media_id");
+                        .HasConstraintName("fk_movie_genres_movies_movie_id");
 
                     b.Navigation("Genre");
 
-                    b.Navigation("Media");
+                    b.Navigation("Movie");
                 });
 
             modelBuilder.Entity("StreamAPI.Domain.Season", b =>
                 {
-                    b.HasOne("StreamAPI.Domain.TvShow", "TvShow")
+                    b.HasOne("StreamAPI.Domain.Movie", "Movie")
                         .WithMany("Seasons")
-                        .HasForeignKey("TvShowId")
+                        .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_seasons_tv_shows_tv_show_id");
+                        .HasConstraintName("fk_seasons_movies_movie_id");
 
-                    b.Navigation("TvShow");
+                    b.Navigation("Movie");
                 });
 
             modelBuilder.Entity("StreamAPI.Domain.Genre", b =>
                 {
-                    b.Navigation("MediaGenres");
+                    b.Navigation("MovieGenres");
                 });
 
-            modelBuilder.Entity("StreamAPI.Domain.Media", b =>
+            modelBuilder.Entity("StreamAPI.Domain.Movie", b =>
                 {
                     b.Navigation("Genres");
+
+                    b.Navigation("Seasons");
                 });
 
             modelBuilder.Entity("StreamAPI.Domain.Season", b =>
                 {
                     b.Navigation("Episodes");
-                });
-
-            modelBuilder.Entity("StreamAPI.Domain.TvShow", b =>
-                {
-                    b.Navigation("Seasons");
                 });
 #pragma warning restore 612, 618
         }

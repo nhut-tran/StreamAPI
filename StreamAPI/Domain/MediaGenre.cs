@@ -1,25 +1,26 @@
 namespace StreamAPI.Domain;
 
-public class MediaGenre
+public class MovieGenre
 {
-    public int MediaId { get; private set; }
-    public Media Media { get; private set; }
+    // For EF Core
+    private MovieGenre() { }
+    public int MovieId { get; private set; }
+    public Movie Movie { get; private set; }
 
     public int GenreId { get; private set; }
     public Genre Genre { get; private set; }
 
     public DateTime AddedAt { get; private set; }
 
-    internal MediaGenre(Media media, Genre genre)
+    internal MovieGenre(Movie movie, Genre genre)
     {
-        Media = media ?? throw new ArgumentNullException(nameof(media));
+        Movie = movie ?? throw new ArgumentNullException(nameof(movie));
         Genre = genre ?? throw new ArgumentNullException(nameof(genre));
-        MediaId = media.Id;
+        MovieId = movie.Id;
         GenreId = genre.Id;
         AddedAt = DateTime.UtcNow;
     }
 
-    // For EF Core
-    private MediaGenre() { }
+ 
 }
 

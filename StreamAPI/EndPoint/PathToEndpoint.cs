@@ -1,5 +1,10 @@
 namespace StreamAPI.EndPoint;
 
+public static class ApiVersion
+{
+    public const int V1 = 1;
+    public const int V2 = 2;
+}
 
 public static class RootPath
 {

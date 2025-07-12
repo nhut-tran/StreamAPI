@@ -8,11 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 public class AppDbContext : DbContext
 {
-    public DbSet<Media> Media => Set<Media>();
+
     public DbSet<Movie> Movies => Set<Movie>();
-    public DbSet<TvShow> TvShows => Set<TvShow>();
     public DbSet<Genre> Genres => Set<Genre>();
-    public DbSet<MediaGenre> MediaGenres => Set<MediaGenre>();
+    public DbSet<MovieGenre> MovieGenres => Set<MovieGenre>();
     public DbSet<Season> Seasons => Set<Season>();
     public DbSet<Episode> Episodes => Set<Episode>();
 
@@ -26,4 +25,22 @@ public class AppDbContext : DbContext
         
         base.OnModelCreating(modelBuilder);
     }
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        foreach (var entry in ChangeTracker.Entries<EntityWithTimeStamp>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    entry.Entity.SetCreatedAt();
+                    break;
+                case EntityState.Modified:
+                    entry.Entity.SetUpdatedAt();
+                    break;
+            }
+        }
+
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
 }

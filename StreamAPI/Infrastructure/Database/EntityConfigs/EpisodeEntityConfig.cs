@@ -10,7 +10,7 @@ public class EpisodeConfiguration : IEntityTypeConfiguration<Episode>
     {
         
         builder.HasKey(e => e.Id);
-
+        builder.Property(e => e.PlayBackUrl).HasMaxLength(300);
         builder.Property(e => e.Number)
             .IsRequired();
 

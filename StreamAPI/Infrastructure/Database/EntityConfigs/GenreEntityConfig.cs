@@ -15,7 +15,7 @@ public class GenreConfiguration : IEntityTypeConfiguration<Genre>
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Navigation(g => g.MediaGenres)
+        builder.Navigation(g => g.MovieGenres)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

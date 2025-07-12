@@ -22,7 +22,8 @@ public static class EndpointBuilderExtension
             endpoint
                 .MapEndpoint(app)
                 .WithApiVersionSet(apiVersionSet)
-                .MapToApiVersion(endpoint.Version);
+                .MapToApiVersion(endpoint.Version)
+                .WithOpenApi();
         }
         
         return app;
