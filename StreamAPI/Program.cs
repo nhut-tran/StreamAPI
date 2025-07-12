@@ -1,8 +1,12 @@
-var builder = WebApplication.CreateBuilder(args);
+using FFMpegCore;
+using Microsoft.EntityFrameworkCore;
+using StreamAPI.Infrastructure.Database;
 
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<AppDbContext>(bd => bd.UseNpgsql(builder.Configuration.GetConnectionString("Default")).UseSnakeCaseNamingConvention());
 
 var app = builder.Build();
 
